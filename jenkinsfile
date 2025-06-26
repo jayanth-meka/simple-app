@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        GRADLE_HOME = './gradlew'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh './gradlew assembleDebug'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh './gradlew test'
+            }
+        }
+
+        stage('Lint') {
+            steps {
+                sh './gradlew lint'
+            }
+        }
+
+        stage('Build APK') {
+            steps {
+                sh './gradlew assembleRelease'
+            }
+        }
+    }
+}
