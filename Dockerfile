@@ -1,13 +1,20 @@
-# Use OpenJDK base image (Alpine-based for size)
-FROM openjdk:17-alpine
-
-# Install required dependencies
-RUN apk add --no-cache git unzip bash curl
+# Use a full Android build environment image (Gradle + Android SDK)
+FROM ghcr.io/android/complete:latest
 
 # Set working directory
-WORKDIR /app
+WORKDIR /workspace
 
-# Copy the entire Android project
-COPY app/src/main/java/com/example/myapplication .
+# Copy all project files into the container
+COPY . .
 
-# Output location: /app/app/build/outputs/apk/debug/app-debug.apk
+# Ensure gradlew is executable
+RUN chmod +x ./gradlew
+
+# Accept licenses (needed for some builds)
+RUN yes | ./gradlew --no-daemon androidDependencies
+
+# Build debug APK
+RUN ./gradlew assembleDebug
+
+# The APK will be available here:
+# /workspace/app/build/outputs/apk/debug/app-debug.apk
