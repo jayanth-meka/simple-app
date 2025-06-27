@@ -10,10 +10,4 @@ WORKDIR /app
 # Copy the entire Android project
 COPY app/src/main/java/com/example/myapplication .
 
-# Give Gradle wrapper permissions (if available)
-RUN chmod +x ./gradlew
-
-# Build the project using Gradle
-RUN ./gradlew assembleDebug
-
 # Output location: /app/app/build/outputs/apk/debug/app-debug.apk
