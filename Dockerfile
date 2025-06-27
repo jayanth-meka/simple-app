@@ -1,20 +1,17 @@
-# Use a full Android build environment image (Gradle + Android SDK)
-FROM ghcr.io/android/complete:latest
+# Use Android SDK + OpenJDK image
+FROM androidsdk/android-30
 
 # Set working directory
 WORKDIR /workspace
 
-# Copy all project files into the container
+# Copy project into the container
 COPY . .
 
-# Ensure gradlew is executable
+# Give gradlew permission
 RUN chmod +x ./gradlew
 
-# Accept licenses (needed for some builds)
+# Accept licenses
 RUN yes | ./gradlew --no-daemon androidDependencies
 
-# Build debug APK
+# Build the debug APK
 RUN ./gradlew assembleDebug
-
-# The APK will be available here:
-# /workspace/app/build/outputs/apk/debug/app-debug.apk
