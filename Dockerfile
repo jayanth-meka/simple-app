@@ -1,20 +1,19 @@
-# Use lightweight Alpine-based Node.js image
-FROM node:18-alpine
+# Use OpenJDK base image (Alpine-based for size)
+FROM openjdk:17-alpine
+
+# Install required dependencies
+RUN apk add --no-cache git unzip bash curl
 
 # Set working directory
 WORKDIR /app
 
-# Copy only package files first for caching
-COPY package*.json ./
+# Copy the entire Android project
+COPY app/src/main/java/com/example/myapplication .
 
-# Install dependencies
-RUN npm install
+# Give Gradle wrapper permissions (if available)
+RUN chmod +x ./gradlew
 
-# Copy the rest of the application
-COPY . .
+# Build the project using Gradle
+RUN ./gradlew assembleDebug
 
-# Expose app port (adjust if your app uses a different one)
-EXPOSE 3000
-
-# Start the application
-CMD ["npm", "start"]
+# Output location: /app/app/build/outputs/apk/debug/app-debug.apk
